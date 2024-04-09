@@ -1,12 +1,13 @@
 {
   "name": "dt-sql-parser-semantic-analyse-plugin",
-  "version": "0.0.1-alpha.1",
+  "version": "0.0.1-alpha.2",
   "description": "an dt-sql-parser plugin with semantic result",
   "type": "module",
   "files": [
     "dist"
   ],
   "main": "./dist/lib/dt-sql-parser-semantic-analyse-plugin.js",
+  "types": "./dist/types/index.d.ts",
   "module": "./dist/es/index.js",
   "exports": {
     ".": {
@@ -16,7 +17,6 @@
   },
   "scripts": {
     "dev": "vite",
-    "build-es": "tsc",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "lint": "eslint . --fix"
