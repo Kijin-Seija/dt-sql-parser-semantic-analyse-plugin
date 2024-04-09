@@ -4,10 +4,10 @@
     "outDir": "./dist/es/",
     "declaration": true,
     "declarationDir": "./dist/types/",
-    "target": "ES2020",
+    "target": "ES6",
     "useDefineForClassFields": true,
-    "module": "ESNext",
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "module": "ES6",
+    "lib": ["DOM", "DOM.Iterable"],
     "skipLibCheck": true,
 
     /* Bundler mode */
