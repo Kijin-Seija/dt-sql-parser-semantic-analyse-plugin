@@ -52,7 +52,8 @@ export interface Entity {
   text: string
   type: number
   caret: boolean
-  belongsToStmt: Stmt
+  belongsToStmt: Stmt | null
+  belongsToEntity: Entity | null
   relatedEntities: Record<string, Entity[]>
 }
 

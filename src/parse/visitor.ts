@@ -58,26 +58,31 @@ export class SQLVisitor extends AbstractParseTreeVisitor<void> implements Postgr
     (this as any)[visitorName] = (ctx: ParserRuleContext) => {
       const chain = this.getNodeChain(ctx)
       for (const rule of rules) {
-        if (this.matchRules(chain, this.rules.get(rule))) {
+        const ruleChain = this.rules.get(rule)
+        if (!ruleChain) continue
+        if (this.matchRules(chain, ruleChain)) {
+          const ruleChainBegin = ruleChain[0]
+          const beginStmt = this.stmtStack.find(stmt => stmt.type === ruleChainBegin)
+          const beginEntity = this.entityStack.find(entity => entity.type === ruleChainBegin)
           const result: Entity = {
             rule,
             text: ctx.text,
             type: ctx.ruleIndex,
             caret: withCaret(ctx),
-            belongsToStmt: this.stmtStack[this.stmtStack.length - 1],
+            belongsToStmt: beginStmt || null,
+            belongsToEntity: beginEntity || null,
             relatedEntities: {}
           }
-          if (this.entityStack[this.entityStack.length - 1]) {
-            if (!this.entityStack[this.entityStack.length - 1].relatedEntities[rule]) this.entityStack[this.entityStack.length - 1].relatedEntities[rule] = []
-            this.entityStack[this.entityStack.length - 1].relatedEntities[rule].push(result)
-          } else {
-            if (!this.stmtStack[this.stmtStack.length - 1].relatedEntities[rule]) this.stmtStack[this.stmtStack.length - 1].relatedEntities[rule] = []
-            this.stmtStack[this.stmtStack.length - 1].relatedEntities[rule].push(result)
+          if (beginEntity) {
+            if (!beginEntity.relatedEntities[rule]) beginEntity.relatedEntities[rule] = []
+            beginEntity.relatedEntities[rule].push(result)
+          } else if (beginStmt) {
+            if (!beginStmt.relatedEntities[rule]) beginStmt.relatedEntities[rule] = []
+            beginStmt.relatedEntities[rule].push(result)
           }
           if (withCaret(ctx)) this.result.nerestCaretEntityList.push(result)
           this.entityStack.push(result)
           isHitRule = true
-          break
         }
       }
       this.visitChildren(ctx)

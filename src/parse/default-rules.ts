@@ -1,6 +1,7 @@
 import { PostgreSQLParser } from 'dt-sql-parser/dist/lib/pgsql/PostgreSQLParser'
 
 export const defaultStmts = [
+  'stmt',
   // select statement
   'selectstmt'
 ]
@@ -21,6 +22,16 @@ export const defaultEntities = [
 ]
 
 export const defaultRules: Record<string, number[]> = {
+  // 通用的简单column规则（不带.运算符的column)
+  common_column_simple: [
+    PostgreSQLParser.RULE_stmt,
+    PostgreSQLParser.RULE_column_name
+  ],
+  // 通用的复合column规则（带.运算符的column)
+  common_column_ref: [
+    PostgreSQLParser.RULE_stmt,
+    PostgreSQLParser.RULE_columnref
+  ],
   select_target_column_simple: [
     PostgreSQLParser.RULE_selectstmt,
     PostgreSQLParser.RULE_select_clause,
