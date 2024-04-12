@@ -26,3 +26,8 @@ export class DtSqlParserSemAnalysePlugin {
     return sqlParseResult
   }
 }
+
+export * from './types'
+export * from './caret'
+export * from './parse/default-rules'
+export * from './preprocess/default-preprocessor'
