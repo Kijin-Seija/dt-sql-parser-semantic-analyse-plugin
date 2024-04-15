@@ -1,6 +1,6 @@
 {
   "name": "dt-sql-parser-semantic-analyse-plugin",
-  "version": "0.0.1-alpha.7",
+  "version": "0.0.1-alpha.8",
   "description": "an dt-sql-parser plugin with semantic result",
   "type": "module",
   "files": [
