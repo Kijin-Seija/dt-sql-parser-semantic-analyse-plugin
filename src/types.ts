@@ -1,4 +1,4 @@
-import type BasicParser from 'dt-sql-parser/dist/parser/common/basicParser'
+import { type BasicSQL } from 'dt-sql-parser/dist/parser/common/basicSQL'
 
 export interface InsertCaretPlaceholderConfig {
   lineNumber: number
@@ -24,10 +24,11 @@ export interface PluginSettings {
    * 自定义解析逻辑
    */
   parse?: {
-    parser?: BasicParser
+    parser?: BasicSQL
     stmts?: string[]
     entities?: string[]
     rules?: Record<string, number[]>
+    alias?: Record<string, string>
   }
 }
 

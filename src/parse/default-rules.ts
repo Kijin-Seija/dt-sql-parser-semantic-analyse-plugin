@@ -1,89 +1,39 @@
-import { PostgreSQLParser } from 'dt-sql-parser/dist/lib/pgsql/PostgreSQLParser'
+import { PostgreSqlParser } from 'dt-sql-parser/dist/lib/postgresql/PostgreSqlParser'
+
+export const defaultAlias = {
+  selectstmt: 'selectStatement',
+  target_el: 'target_label'
+}
 
 export const defaultStmts = [
-  'stmt',
-  // select statement
-  'selectstmt'
+  'simple_select',
 ]
 
 export const defaultEntities = [
-  // column_name directly. ex: select column1
-  'column_name',
-  // column_name indirectly. ex: select schema.column1
-  'columnref',
-  'table_name',
-  'view_name',
-  'function_name',
-  'schema_name',
+  'target_el',
   'colid',
   'attr_name',
-  'collabel',
-  'func_arg_expr'
+  'collabel'
 ]
 
 export const defaultRules: Record<string, number[]> = {
-  // 通用的简单column规则（不带.运算符的column)
-  common_column_simple: [
-    PostgreSQLParser.RULE_stmt,
-    PostgreSQLParser.RULE_column_name
+  select_target: [
+    PostgreSqlParser.RULE_simple_select,
+    PostgreSqlParser.RULE_target_el,
   ],
-  // 通用的复合column规则（带.运算符的column)
-  common_column_ref: [
-    PostgreSQLParser.RULE_stmt,
-    PostgreSQLParser.RULE_columnref
+  select_target_colid: [
+    PostgreSqlParser.RULE_target_el,
+    PostgreSqlParser.RULE_function_name,
+    PostgreSqlParser.RULE_colid
   ],
-  select_target_column_simple: [
-    PostgreSQLParser.RULE_selectstmt,
-    PostgreSQLParser.RULE_select_clause,
-    PostgreSQLParser.RULE_target_list,
-    PostgreSQLParser.RULE_column_name
+  select_target_attr: [
+    PostgreSqlParser.RULE_target_el,
+    PostgreSqlParser.RULE_function_name,
+    PostgreSqlParser.RULE_attr_name
   ],
-  select_target_column_ref: [
-    PostgreSQLParser.RULE_selectstmt,
-    PostgreSQLParser.RULE_select_clause,
-    PostgreSQLParser.RULE_target_list,
-    PostgreSQLParser.RULE_columnref
-  ],
-  select_target_function: [
-    PostgreSQLParser.RULE_selectstmt,
-    PostgreSQLParser.RULE_select_clause,
-    PostgreSQLParser.RULE_target_list,
-    PostgreSQLParser.RULE_function_name
-  ],
-  select_column_alias: [
-    PostgreSQLParser.RULE_selectstmt,
-    PostgreSQLParser.RULE_select_clause,
-    PostgreSQLParser.RULE_target_list,
-    PostgreSQLParser.RULE_collabel
-  ],
-  select_from_table: [
-    PostgreSQLParser.RULE_selectstmt,
-    PostgreSQLParser.RULE_select_clause,
-    PostgreSQLParser.RULE_from_clause,
-    PostgreSQLParser.RULE_table_name
-  ],
-  select_from_view: [
-    PostgreSQLParser.RULE_selectstmt,
-    PostgreSQLParser.RULE_select_clause,
-    PostgreSQLParser.RULE_from_clause,
-    PostgreSQLParser.RULE_view_name
-  ],
-  select_from_function: [
-    PostgreSQLParser.RULE_selectstmt,
-    PostgreSQLParser.RULE_select_clause,
-    PostgreSQLParser.RULE_from_clause,
-    PostgreSQLParser.RULE_function_name
-  ],
-  column_ref_colid: [
-    PostgreSQLParser.RULE_columnref,
-    PostgreSQLParser.RULE_colid
-  ],
-  column_ref_attr: [
-    PostgreSQLParser.RULE_columnref,
-    PostgreSQLParser.RULE_attr_name
-  ],
-  function_arg_expr: [
-    PostgreSQLParser.RULE_function_name,
-    PostgreSQLParser.RULE_func_arg_expr
+  select_target_alias: [
+    PostgreSqlParser.RULE_target_el,
+    -PostgreSqlParser.RULE_attr_name,
+    PostgreSqlParser.RULE_collabel
   ]
 }

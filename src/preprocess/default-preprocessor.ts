@@ -1,5 +1,14 @@
 import { type Preprocessor } from '../types'
 
+export const addSuffixForParseSelectProcessor: Preprocessor = (sql: string) => {
+  const suffix = ' '
+  const maxWords = 3
+  if (/select( )+/.test(sql.toLowerCase()) && sql.split(' ').filter(item => item).length < maxWords) {
+    return sql + '' + suffix
+  }
+  return sql
+}
+
 export const addSuffixForParseAlterFunctionProcessor: Preprocessor = (sql: string) => {
   const suffix = 'RESET ALL'
   const maxWords = 4
@@ -20,5 +29,6 @@ export const addSuffixForParseAlterTableProcessor: Preprocessor = (sql: string) 
 
 export const defaultPreprocessorList = [
   addSuffixForParseAlterFunctionProcessor,
-  addSuffixForParseAlterTableProcessor
+  addSuffixForParseAlterTableProcessor,
+  addSuffixForParseSelectProcessor
 ]

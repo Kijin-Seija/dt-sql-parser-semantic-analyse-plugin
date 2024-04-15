@@ -12,7 +12,7 @@
     <script type="module">
       const { DtSqlParserSemAnalysePlugin } = await import(/* @vite-ignore */import.meta.env.VITE_ENTRY_PATH)
       const myPlugin = new DtSqlParserSemAnalysePlugin()
-      const sql = 'SELECT a.b| FROM t'
+      const sql = 'SELECT a.| AS c'
       const caretColumn = sql.indexOf('|') + 1
       const result = myPlugin.parse(sql.replace('|', ''), { lineNumber: 1, columnNumber: caretColumn })
       console.log(result)

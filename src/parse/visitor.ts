@@ -1,20 +1,23 @@
-import { type ParserRuleContext } from 'antlr4ts'
-import { AbstractParseTreeVisitor, type PostgreSQLParserVisitor } from 'dt-sql-parser'
-import { type ProgramContext, PostgreSQLParser } from 'dt-sql-parser/dist/lib/pgsql/PostgreSQLParser'
+import { AbstractParseTreeVisitor, type RuleContext } from 'antlr4ng'
+import { type PostgreSqlParserVisitor } from 'dt-sql-parser'
+import { type ProgramContext, PostgreSqlParser } from 'dt-sql-parser/dist/lib/postgresql/PostgreSqlParser'
 import { type Entity, type SQLParseResult, type Stmt } from '../types'
 import { caretPlaceholder } from '../caret'
 
-function withCaret (ctx: ParserRuleContext) {
-  return ctx.text.includes(caretPlaceholder)
+function toVisitorAlias (node: string, alias: Record<string, string>) {
+  const result = alias[node] || node
+  return `visit${result.slice(0, 1).toUpperCase()}${result.slice(1)}`
 }
 
-export class SQLVisitor extends AbstractParseTreeVisitor<void> implements PostgreSQLParserVisitor<void> {
+function withCaret (ctx: RuleContext) {
+  return ctx.getText().includes(caretPlaceholder)
+}
+
+export class SQLVisitor extends AbstractParseTreeVisitor<void> implements PostgreSqlParserVisitor<void> {
   private result: SQLParseResult = {
     stmtList: [],
     nerestCaretEntityList: []
   }
-
-  protected defaultResult = () => ({ list: [], nerestCaret: null })
 
   public clear () {
     this.result = { stmtList: [], nerestCaretEntityList: [] }
@@ -23,6 +26,8 @@ export class SQLVisitor extends AbstractParseTreeVisitor<void> implements Postgr
   public getResult () {
     return this.result
   }
+
+  public visitorAlias = {}
 
   private readonly stmtStack: Stmt[] = []
 
@@ -50,12 +55,12 @@ export class SQLVisitor extends AbstractParseTreeVisitor<void> implements Postgr
   }
 
   public addEntity (name: string) {
-    this.entityRules.set((PostgreSQLParser as any)[`RULE_${name}`], [])
+    this.entityRules.set((PostgreSqlParser as any)[`RULE_${name}`], [])
     let isHitRule = false
-    const visitorName = `visit${name.slice(0, 1).toUpperCase()}${name.slice(1)}`
+    const visitorName = toVisitorAlias(name, this.visitorAlias)
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const rules = this.entityRules.get((PostgreSQLParser as any)[`RULE_${name}`])!;
-    (this as any)[visitorName] = (ctx: ParserRuleContext) => {
+    const rules = this.entityRules.get((PostgreSqlParser as any)[`RULE_${name}`])!;
+    (this as any)[visitorName] = (ctx: RuleContext) => {
       const chain = this.getNodeChain(ctx)
       for (const rule of rules) {
         const ruleChain = this.rules.get(rule)
@@ -66,7 +71,7 @@ export class SQLVisitor extends AbstractParseTreeVisitor<void> implements Postgr
           const beginEntity = this.entityStack.find(entity => entity.type === ruleChainBegin)
           const result: Entity = {
             rule,
-            text: ctx.text,
+            text: ctx.getText(),
             type: ctx.ruleIndex,
             caret: withCaret(ctx),
             belongsToStmt: beginStmt || null,
@@ -91,11 +96,11 @@ export class SQLVisitor extends AbstractParseTreeVisitor<void> implements Postgr
   }
 
   public addStmt (name: string) {
-    this.stmtRules.set((PostgreSQLParser as any)[`RULE_${name}`], [])
-    const visitorName = `visit${name.slice(0, 1).toUpperCase()}${name.slice(1)}`;
-    (this as any)[visitorName] = (ctx: ParserRuleContext) => {
+    this.stmtRules.set((PostgreSqlParser as any)[`RULE_${name}`], [])
+    const visitorName = toVisitorAlias(name, this.visitorAlias);
+    (this as any)[visitorName] = (ctx: RuleContext) => {
       this.stmtStack.push({
-        text: ctx.text,
+        text: ctx.getText(),
         type: ctx.ruleIndex,
         caret: withCaret(ctx),
         relatedEntities: {}
@@ -106,8 +111,8 @@ export class SQLVisitor extends AbstractParseTreeVisitor<void> implements Postgr
     }
   }
 
-  private getNodeChain (ctx: ParserRuleContext) {
-    let _ctx: ParserRuleContext | undefined = ctx
+  private getNodeChain (ctx: RuleContext) {
+    let _ctx: RuleContext | null = ctx
     const result = []
     while (_ctx) {
       result.unshift(_ctx.ruleIndex)
@@ -118,10 +123,13 @@ export class SQLVisitor extends AbstractParseTreeVisitor<void> implements Postgr
 
   private matchRules (chain: number[], ruleChain: number[] | undefined) {
     // 只要ruleChain里面每个元素都出现在chain里面，且顺序一致，则返回true。否则返回false
+    // 当元素value为负数时，表示NOT，即不出现id为-value的规则。
     if (!ruleChain) return false
     let index = 0
     for (let i = 0; i < ruleChain.length; i++) {
-      if (chain.indexOf(ruleChain[i]) < index) return false
+      if (ruleChain[i] < 0) {
+        if (chain.indexOf(-ruleChain[i]) >= index) return false
+      } else if (chain.indexOf(ruleChain[i]) < index) return false
       else index = chain.indexOf(ruleChain[i])
     }
     return true
