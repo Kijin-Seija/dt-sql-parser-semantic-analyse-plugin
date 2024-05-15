@@ -1,6 +1,6 @@
 # dt-sql-parser-semantic-analyse-plugin
 
-A [dt-sql-parser](https://github.com/DTStack/dt-sql-parser) plugin with semantic result. [Theory](https://github.com/Kijin-Seija/dt-sql-parser-analyse-demo).
+A [dt-sql-parser](https://github.com/DTStack/dt-sql-parser) plugin with semantic result. [Theory(zh-CN)](https://github.com/Kijin-Seija/dt-sql-parser-analyse-demo).
 
 ## Installation
 
@@ -29,6 +29,10 @@ import { PostgreSQLParser } from 'dt-sql-parser/dist/lib/pgsql/PostgreSQLParser'
 const myPlugin = new DtSqlParserSemAnalysePlugin({
   parse: {
     parser: new PostgresSQL()
+    alias: {
+      selectstmt: 'selectStatement',
+      target_el: 'target_label'
+    }
     stmts: [
       'selectstmt'
     ],
@@ -50,6 +54,32 @@ console.log(result)
 ```
 
 **Notice: A rule must start with a/an statement/entity and stop with an entity. You should add a node keywords(keyword is in your parser with format: `RULE_[keyword]`) into stmts/entities before using it.**
+
+## Rule Chain Opeator
+
+You can set a negative number whose abs equals to a ruleIndex. That means exclude this rule.
+
+Example:
+
+```typescript
+select_target_alias: [
+  PostgreSqlParser.RULE_target_el,
+  -PostgreSqlParser.RULE_attr_name,
+  PostgreSqlParser.RULE_collabel
+]
+```
+
+🚧 I will later work on `Operator.AND` and `Operator.OR`.
+
+## Alias
+
+Some node names in dt-sql-parser code are different from its antlr4's definition.
+
+You can find possible alias in https://github.com/DTStack/dt-sql-parser/blob/main/src/grammar/postgresql/PostgreSqlParser.g4, then add it into `alias` option.
+
+Example:
+![alt text](./assets/alias-example.png)
+
 
 ## Add a preprocessor
 
