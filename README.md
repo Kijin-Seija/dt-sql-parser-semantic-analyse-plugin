@@ -73,7 +73,7 @@ select_target_alias: [
 
 ## Alias
 
-Some node names in dt-sql-parser code are different from its antlr4's definition.
+Some node names in dt-sql-parser code are different from their antlr4's definition.
 
 You can find possible alias in https://github.com/DTStack/dt-sql-parser/blob/main/src/grammar/postgresql/PostgreSqlParser.g4, then add it into `alias` option.
 
