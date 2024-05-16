@@ -78,6 +78,7 @@ Some node names in dt-sql-parser code are different from their antlr4's definiti
 You can find possible alias in https://github.com/DTStack/dt-sql-parser/blob/main/src/grammar/postgresql/PostgreSqlParser.g4, then add it into `alias` option.
 
 Example:
+
 ![alt text](./assets/alias-example.png)
 
 
@@ -86,7 +87,9 @@ Example:
 ```typescript
 const myPlugin = new DtSqlParserSemAnalysePlugin({
   preprocessor: [
-    (sql) => sql.toUpperCase()
+    (sql) => sql.toUpperCase(),
+    ...
+  ]
 })
 ```
 
