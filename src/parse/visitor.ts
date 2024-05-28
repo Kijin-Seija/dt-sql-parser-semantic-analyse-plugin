@@ -85,7 +85,7 @@ export class SQLVisitor extends AbstractParseTreeVisitor<void> implements Postgr
             if (!beginStmt.relatedEntities[rule]) beginStmt.relatedEntities[rule] = []
             beginStmt.relatedEntities[rule].push(result)
           }
-          if (withCaret(ctx)) this.result.nerestCaretEntityList.push(result)
+          if (beginStmt && withCaret(ctx)) this.result.nerestCaretEntityList.push(result)
           this.entityStack.push(result)
           isHitRule = true
         }
