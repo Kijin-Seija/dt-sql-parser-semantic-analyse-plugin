@@ -1,6 +1,6 @@
 {
   "name": "dt-sql-parser-semantic-analyse-plugin",
-  "version": "0.0.1-alpha.9",
+  "version": "0.0.1-alpha.11",
   "description": "an dt-sql-parser plugin with semantic result",
   "type": "module",
   "files": [
@@ -37,6 +37,6 @@
     "vite-plugin-node-polyfills": "^0.21.0"
   },
   "dependencies": {
-    "dt-sql-parser": "^4.0.0-beta.4.12"
+    "dt-sql-parser": "^4.0.1"
   }
 }
