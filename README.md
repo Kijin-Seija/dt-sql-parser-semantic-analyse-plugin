@@ -55,7 +55,7 @@ console.log(result)
 
 **Notice: A rule must start with a/an statement/entity and stop with an entity. You should add a node keywords(keyword is in your parser with format: `RULE_[keyword]`) into stmts/entities before using it.**
 
-## Rule Chain Opeator
+## Rule Chain Operator
 
 You can set a negative number whose abs equals to a ruleIndex. That means exclude this rule.
 
