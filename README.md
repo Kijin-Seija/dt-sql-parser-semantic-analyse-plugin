@@ -100,7 +100,7 @@ You can find possible alias in https://github.com/DTStack/dt-sql-parser/blob/mai
 
 ![alt text](./assets/alias-example.png)
 
-## Custom dt-sql-parser
+## Customize dt-sql-parser
 
 If you want to use your custom `dt-sql-parser`, with external grammar(such as `DISTRIBUTED`, etc.), follow steps below:
 1. fork [dt-sql-parser](https://github.com/DTStack/dt-sql-parser).
