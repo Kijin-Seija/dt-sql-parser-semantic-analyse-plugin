@@ -43,6 +43,60 @@ console.log(result)
 
 This will use a postgresql Parser. You can get `select_target` text from parse result.
 
+```typescript
+{
+  // all wrapped Entities around your caret/cursor
+  nearestCaretEntityList: [
+    {
+      // your definition of the rule that contains the entity.
+      rule: 'select_target',
+      // entity's text. __CARET_PLACEHOLDER__ is the placeholder of caret. You can replace it.
+      text: 'a__CARET_PLACEHOLDER__',
+      // entity's type code in PostgreSqlParser
+      type: 694,
+      // whether this entity contains caret.
+      caret: true,
+      // stmt which the entity belongs to. Equals to stmtList[0] in this example.
+      belongsToStmt: {
+        text: 'SELECTa__CARET_PLACEHOLDER__FROMt',
+        type: 500,
+        caret: true,
+        relatedEntities: { ... }
+      },
+      // if this entity is a sub entity, this param will show its parent entity with the same struct. Currently in this example it's null.
+      belongsToEntity: null
+      // if this entity has sub entities, they will be collected in this param, with the same struct.
+      relatedEntities: [...]
+    }
+  ],
+  stmtList: [
+    {
+      // stmt's text. __CARET_PLACEHOLDER__ is the placeholder of caret. You can replace it.
+      text: 'SELECTa__CARET_PLACEHOLDER__FROMt',
+      // stmt's type code in PostgreSqlParser
+      type: 500,
+      // whether this stmt contains caret.
+      caret: true,
+      // those entities collected in this stmt. Divided by rules.
+      relatedEntities: {
+        // your definition of the rule.
+        select_target: [
+          {
+            rule: 'select_target',
+            text: 'a__CARET_PLACEHOLDER__',
+            type: 694,
+            caret: true,
+            belongsToStmt: { ... },
+            belongsToEntity: null
+            relatedEntities: [...]
+          }
+        ]
+      }
+    }
+  ]
+}
+```
+
 **Notice: A rule must start with a/an statement/entity and stop with an entity. You should add a node keywords(keyword is in your parser with format: `RULE_[keyword]`) into stmts/entities before using it.**
 
 ## Add a preprocessor

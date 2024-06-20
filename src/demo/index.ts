@@ -1,5 +1,5 @@
-import { PostgreSQL } from 'dt-sql-parser-oushudb'
-import { PostgreSqlParser } from 'dt-sql-parser-oushudb/dist/lib/postgresql/PostgreSqlParser'
+import { PostgreSQL } from 'dt-sql-parser'
+import { PostgreSqlParser } from 'dt-sql-parser/dist/lib/postgresql/PostgreSqlParser'
 import { DtSqlParserSemAnalysePlugin } from '..'
 
 const myPlugin = new DtSqlParserSemAnalysePlugin({
@@ -8,6 +8,7 @@ const myPlugin = new DtSqlParserSemAnalysePlugin({
     parser: PostgreSqlParser,
     alias: {
       selectstmt: 'selectStatement',
+      target_el: 'target_label'
     },
     stmts: [
       'selectstmt',
