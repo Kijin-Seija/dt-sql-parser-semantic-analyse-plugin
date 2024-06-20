@@ -1,6 +1,4 @@
 import { AbstractParseTreeVisitor, type RuleContext } from 'antlr4ng'
-import { type PostgreSqlParserVisitor } from 'dt-sql-parser'
-import { type ProgramContext, PostgreSqlParser } from 'dt-sql-parser/dist/lib/postgresql/PostgreSqlParser'
 import { type Entity, type SQLParseResult, type Stmt } from '../types'
 import { caretPlaceholder } from '../caret'
 
@@ -13,11 +11,13 @@ function withCaret (ctx: RuleContext) {
   return ctx.getText().includes(caretPlaceholder)
 }
 
-export class SQLVisitor extends AbstractParseTreeVisitor<void> implements PostgreSqlParserVisitor<void> {
+export class SQLVisitor extends AbstractParseTreeVisitor<void> {
   private result: SQLParseResult = {
     stmtList: [],
     nerestCaretEntityList: []
   }
+
+  private parser: Record<string, any> = {}
 
   public clear () {
     this.result = { stmtList: [], nerestCaretEntityList: [] }
@@ -25,6 +25,10 @@ export class SQLVisitor extends AbstractParseTreeVisitor<void> implements Postgr
 
   public getResult () {
     return this.result
+  }
+
+  public setParser (parser: Record<string, any>) {
+    this.parser = parser
   }
 
   public visitorAlias = {}
@@ -55,11 +59,11 @@ export class SQLVisitor extends AbstractParseTreeVisitor<void> implements Postgr
   }
 
   public addEntity (name: string) {
-    this.entityRules.set((PostgreSqlParser as any)[`RULE_${name}`], [])
+    this.entityRules.set(this.parser[`RULE_${name}`], [])
     let isHitRule = false
     const visitorName = toVisitorAlias(name, this.visitorAlias)
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const rules = this.entityRules.get((PostgreSqlParser as any)[`RULE_${name}`])!;
+    const rules = this.entityRules.get(this.parser[`RULE_${name}`])!;
     (this as any)[visitorName] = (ctx: RuleContext) => {
       const chain = this.getNodeChain(ctx)
       for (const rule of rules) {
@@ -96,7 +100,7 @@ export class SQLVisitor extends AbstractParseTreeVisitor<void> implements Postgr
   }
 
   public addStmt (name: string) {
-    this.stmtRules.set((PostgreSqlParser as any)[`RULE_${name}`], [])
+    this.stmtRules.set(this.parser[`RULE_${name}`], [])
     const visitorName = toVisitorAlias(name, this.visitorAlias);
     (this as any)[visitorName] = (ctx: RuleContext) => {
       this.stmtStack.push({
@@ -135,7 +139,7 @@ export class SQLVisitor extends AbstractParseTreeVisitor<void> implements Postgr
     return true
   }
 
-  visitProgram (ctx: ProgramContext) {
+  visitProgram (ctx: any) {
     this.visitChildren(ctx)
   }
 }

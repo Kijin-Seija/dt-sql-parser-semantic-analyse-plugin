@@ -1,6 +1,6 @@
 {
   "name": "dt-sql-parser-semantic-analyse-plugin",
-  "version": "0.0.1-alpha.11",
+  "version": "0.1.0",
   "description": "an dt-sql-parser plugin with semantic result",
   "type": "module",
   "files": [
@@ -25,6 +25,8 @@
     "@eslint/eslintrc": "^3.0.2",
     "@eslint/js": "^9.0.0",
     "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "dt-sql-parser": "^4.0.2",
+    "dt-sql-parser-oushudb": "^4.0.2-5",
     "eslint": "^8.57.0",
     "eslint-config-standard-with-typescript": "^43.0.1",
     "eslint-plugin-import": "^2.29.1",
@@ -36,7 +38,7 @@
     "vite": "^5.2.0",
     "vite-plugin-node-polyfills": "^0.21.0"
   },
-  "dependencies": {
-    "dt-sql-parser": "^4.0.1"
+  "peerDependencies": {
+    "antlr4ng": "^2.0.11"
   }
 }
