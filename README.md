@@ -105,7 +105,7 @@ You can find possible alias in https://github.com/DTStack/dt-sql-parser/blob/mai
 If you want to use your custom `dt-sql-parser`, with external grammar(such as `DISTRIBUTED`, etc.), follow steps below:
 1. fork [dt-sql-parser](https://github.com/DTStack/dt-sql-parser).
 2. change its ANTLR4 file as whatever you want.
-3. build asn publish your `dt-sql-parser` npm package(`npm run antlr4 && npm publish`). Suppose to be `my-dt-sql-parser`.
+3. build and publish your `dt-sql-parser` npm package(`npm run antlr4 && npm publish`). Suppose to be `my-dt-sql-parser`.
 4. use `my-dt-sql-parser` instead of `dt-sql-parser` to provide `parse.sql` and `parse.parser`.
 
 Example:
